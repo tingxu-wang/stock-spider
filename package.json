@@ -1,0 +1,30 @@
+{
+  "name": "stock-spider",
+  "version": "1.0.0",
+  "description": "东方财富网股票信息爬虫",
+  "main": "index.js",
+  "scripts": {
+    "stock-code": "cd ./src/spider && node stock-code.js",
+    "stock-data": "cd ./src/spider && node stock-data.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tingxu-wang/stock-spider.git"
+  },
+  "keywords": [
+    "stock",
+    "spider"
+  ],
+  "author": "tingxu.wang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tingxu-wang/stock-spider/issues"
+  },
+  "homepage": "https://github.com/tingxu-wang/stock-spider#readme",
+  "dependencies": {
+    "async": "^2.5.0",
+    "cheerio": "^1.0.0-rc.2",
+    "mongoose": "^4.12.2",
+    "request": "^2.83.0"
+  }
+}
