@@ -5,66 +5,61 @@
 const request = require('request'),
 	fs = require('fs'),
 	config = require('../config'),
-	dataDayUrl = config.dataDayUrl,
-	dataWeekUrl = config.dataWeekUrl,
+	dataUrl = config.dataUrl,
 	maxAsync = config.maxAsync,
 	stockCodes = require('../data/stock-code.json'),
 	async = require('async'),
 	dataModel = require('../data-model'),
 	StockModel = dataModel.StockModel,
-	mongoose = dataModel.mongoose;
+	mongoose = dataModel.mongoose,
+	moment = require('moment');
 
 let processCounter = 0,
 	dataLength = stockCodes.length;
 
 
 function saveStockData(stockCode,cb){
-	request.get(dataWeekUrl.replace('${code}',stockCode),function(err,res,body){
+	request.get(dataUrl.replace('${code}',stockCode).replace('${end}', moment().format('YYYYMMDD')),function(err,res,body){
+		processCounter += 1;
 		if(err){
 			console.log(err);
+			cb();
 			return;
 		}
 
-		const weekStockData = JSON.parse(body);
-
-		if(weekStockData.errorMsg.toLowerCase() === 'success'){
-			const weekData = weekStockData.mashData;
-
-			request.get(dataDayUrl.replace('${code}',stockCode),function(err,res,body){
-				processCounter += 1;
-				if(err){
-					console.log(err);
-					return;
-				}
-
-				const dayStockData = JSON.parse(body);
-
-				if(dayStockData.errorMsg.toLowerCase() === 'success'){
-					const dayData = dayStockData.mashData;
-
-					if(dayData && weekData){
-						const stock = new StockModel({
-							code : stockCode,
-							dayData,
-							weekData
-						});
-						stock.save((err)=>{
-							if(err){
-								console.log(err);
-							}else{
-								console.log(`save stock data success, stock code is ${stockCode},${processCounter}/${dataLength}`);
-							}
-						})
+		let data = /historySearchHandler\(\[(.+)\]\)/.exec(body)[1];
+		if(data){
+			data = JSON.parse(data);
+			if(data.status == 0){
+				let result = {
+					code : stockCode,
+					data : []
+				};
+				data = data.hq;
+				data.forEach((item)=>{
+					result.data.push({
+						date : item[0],
+						max : item[6],
+						min : item[5],
+						close : item[2]
+					})
+				});
+				const stock = new StockModel(result);
+				stock.save((err)=>{
+					if(err){
+						console.log(err);
 					}else{
-						console.log(`save stock data failed, no data, stock code is ${stockCode},${processCounter}/${dataLength}`);
+						console.log(`save stock data success, stock code is ${stockCode},${processCounter}/${dataLength}`);
 					}
-				}
-			});
-			if(processCounter == dataLength){
-				mongoose.connection.close();
+				})
+			}else{
+				console.log(`${data.msg},${processCounter}/${dataLength}`);
 			}
 		}else{
-			console.log(weekStockData.errorMsg)
+			console.log(`get data failed,${processCounter}/${dataLength}`);
+		}
+		if(processCounter == dataLength){
+			mongoose.connection.close();
 		}
 		cb();
 	});

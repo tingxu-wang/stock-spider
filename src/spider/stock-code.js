@@ -20,7 +20,7 @@ request.get(stockListUrl,function(err,res,body){
 
 	for(let i = 0;i < length;i++){
 		const href = $a[i].attribs.href;
-		const code = /\.com\/([a-z\d]+).html/.exec(href)[1];
+		const code = /\.com\/[a-z]+([\d]+).html/.exec(href)[1];
 
 		stockCodeList.push(code);
 	}

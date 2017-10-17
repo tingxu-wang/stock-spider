@@ -4,12 +4,15 @@
 
 本项目是根据东方财富网的[股票代码清单](http://quote.eastmoney.com/stocklist.html)
 
-以及百度股市通的股票[日线数据接口](https://gupiao.baidu.com/api/stocks/stockdaybar?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code=sz000001&step=3&start=&count=160&fq_type=no&timestamp=1508161883165)
-以及[周线数据接口](https://gupiao.baidu.com/api/stocks/stockweekbar?from=pc&os_ver=1&cuid=xxx&vv=100&format=json&stock_code=sz000001&step=3&start=&count=160&fq_type=no&timestamp=1508161934457) 
+以及搜狐的[股票历史数据接口](http://q.stock.sohu.com/hisHq?code=cn_000001&start=20171016&end=20171017&stat=1&order=D&period=d&callback=historySearchHandler&rt=jsonp&r=0.8391495715053367&0.9677250558488026)
 
 获取股票交易数据，使用本项目需要自行配置mongodb
 
+目前设置的最大并发数是15，嫌慢可以在config.js中更改maxAsync变量
+
 写本项目的目的是辅助我个人更加高效的根据自己的筛选标准筛选出符合标准的股票，每周看图形实在是太繁琐了...
+
+还有就是src文件夹下的index.js文件我用来做数据分析用了所以没有放上来
 
 ## 使用方法：
 

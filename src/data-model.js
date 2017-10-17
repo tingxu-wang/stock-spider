@@ -5,8 +5,7 @@ mongoose.Promise = global.Promise;
 
 const StockModel = mongoose.model('Stock',{
 	code : String,
-	dayData : Array,
-	weekData : Array
+	data : Array
 });
 
 module.exports = {

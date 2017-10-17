@@ -340,6 +340,10 @@ mime-types@^2.1.12, mime-types@~2.1.17:
   dependencies:
     mime-db "~1.30.0"
 
+moment@^2.19.1:
+  version "2.19.1"
+  resolved "http://registry.npm.taobao.org/moment/download/moment-2.19.1.tgz#56da1a2d1cbf01d38b7e1afc31c10bcfa1929167"
+
 mongodb-core@2.1.17:
   version "2.1.17"
   resolved "http://registry.npm.taobao.org/mongodb-core/download/mongodb-core-2.1.17.tgz#a418b337a14a14990fb510b923dee6a813173df8"
@@ -397,6 +401,10 @@ muri@1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/muri/download/muri-1.3.0.tgz#aeccf3db64c56aa7c5b34e00f95b7878527a4721"
 
+nan@^2.5.0:
+  version "2.7.0"
+  resolved "http://registry.npm.taobao.org/nan/download/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
+
 nth-check@~1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/nth-check/download/nth-check-1.0.1.tgz#9929acdf628fc2c41098deab82ac580cf149aae4"
@@ -441,7 +449,7 @@ readable-stream@2.2.7:
     string_decoder "~1.0.0"
     util-deprecate "~1.0.1"
 
-readable-stream@^2.0.2, readable-stream@^2.1.5:
+readable-stream@^2.0.2:
   version "2.3.3"
   resolved "http://registry.npm.taobao.org/readable-stream/download/readable-stream-2.3.3.tgz#368f2512d79f9d46fdfc71349ae7878bbc1eb95c"
   dependencies:
@@ -541,12 +549,11 @@ stringstream@~0.0.5:
   version "0.0.5"
   resolved "http://registry.npm.taobao.org/stringstream/download/stringstream-0.0.5.tgz#4e484cd4de5a0bbbee18e46307710a8a81621878"
 
-through2@^2.0.3:
-  version "2.0.3"
-  resolved "http://registry.npm.taobao.org/through2/download/through2-2.0.3.tgz#0004569b37c7c74ba39c43f3ced78d1ad94140be"
+talib@^1.0.3:
+  version "1.0.3"
+  resolved "http://registry.npm.taobao.org/talib/download/talib-1.0.3.tgz#eb0a7e3f5301b323b0af02fb338d431d2b9b735a"
   dependencies:
-    readable-stream "^2.1.5"
-    xtend "~4.0.1"
+    nan "^2.5.0"
 
 tough-cookie@~2.3.3:
   version "2.3.3"
@@ -579,7 +586,3 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
-
-xtend@~4.0.1:
-  version "4.0.1"
-  resolved "http://registry.npm.taobao.org/xtend/download/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
