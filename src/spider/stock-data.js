@@ -18,12 +18,30 @@ const request = require('request'),
 let processCounter = 0,
 	dataLength = stockCodes.length;
 
+let successCode = [];
+
+function writeDate() {
+	if(processCounter == dataLength){
+		console.log('get stock data finished');
+		const writeStream = fs.createWriteStream(`${__dirname}/../data/stock-code.json`);
+
+		writeStream.write(JSON.stringify(successCode));
+		writeStream.end(()=>{
+			console.log('stock code write finished');
+			fs.writeFile(`${__dirname}/../data/get-date.json`, moment().format('YYYY-MM-DD'), function(){
+				process.exit(0);
+			});
+		});
+		mongoose.connection.close();
+	}
+}
 
 function saveStockData(stockCode,cb){
 	request.get(dataUrl.replace('${code}',stockCode).replace('${end}', moment().format('YYYYMMDD')),{timeout: timeout},function(err,res,body){
 		processCounter += 1;
 		if(err){
 			console.log(`${err.code},stockCode:${stockCode},${processCounter}/${dataLength}`);
+			writeDate();
 			cb();
 			return;
 		}
@@ -52,6 +70,7 @@ function saveStockData(stockCode,cb){
 						console.log(err);
 					}else{
 						console.log(`success,stockCode: ${stockCode},${processCounter}/${dataLength}`);
+						successCode.push(stockCode);
 					}
 				})
 			}else{
@@ -60,17 +79,23 @@ function saveStockData(stockCode,cb){
 		}else{
 			console.log(`failed,stockCode: ${stockCode},${processCounter}/${dataLength}`);
 		}
-		if(processCounter == dataLength){
-			console.log('finished');
-			mongoose.connection.close();
-			process.exit(0);
-		}
+		writeDate();
 		cb();
 	});
 }
 
-StockModel.remove({}).then(()=>{
-	async.mapLimit(stockCodes, maxAsync, (stockCode,cb)=>{
-		saveStockData(stockCode,cb);
-	});
+fs.open(`${__dirname}/../data/get-date.json`, 'a', function(err ,data) {
+	fs.readFile(`${__dirname}/../data/get-date.json`, function(err, data){
+		const date = data.toString();
+		if(moment().format('YYYY-MM-DD') === date){
+			console.log('已为最新数据');
+			process.exit(0);
+			return
+		}
+		StockModel.remove({}).then(()=>{
+			async.mapLimit(stockCodes, maxAsync, (stockCode,cb)=>{
+				saveStockData(stockCode,cb);
+			});
+		});
+	})
 });

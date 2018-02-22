@@ -29,6 +29,6 @@ request.get(stockListUrl,function(err,res,body){
 
 	writeStream.write(JSON.stringify(stockCodeList));
 	writeStream.end(()=>{
-		console.log('stock list write finished')
+		console.log('stock code write finished')
 	})
 });
