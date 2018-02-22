@@ -7,6 +7,7 @@ const request = require('request'),
 	config = require('../config'),
 	dataUrl = config.dataUrl,
 	maxAsync = config.maxAsync,
+	timeout = config.timeout,
 	stockCodes = require('../data/stock-code.json'),
 	async = require('async'),
 	dataModel = require('../data-model'),
@@ -19,17 +20,17 @@ let processCounter = 0,
 
 
 function saveStockData(stockCode,cb){
-	request.get(dataUrl.replace('${code}',stockCode).replace('${end}', moment().format('YYYYMMDD')),function(err,res,body){
+	request.get(dataUrl.replace('${code}',stockCode).replace('${end}', moment().format('YYYYMMDD')),{timeout: timeout},function(err,res,body){
 		processCounter += 1;
 		if(err){
-			console.log(err);
+			console.log(`${err.code},stockCode:${stockCode},${processCounter}/${dataLength}`);
 			cb();
 			return;
 		}
 
-		let data = /historySearchHandler\(\[(.+)\]\)/.exec(body)[1];
+		let data = /historySearchHandler\(\[(.+)\]\)/.exec(body);
 		if(data){
-			data = JSON.parse(data);
+			data = JSON.parse(data[1]);
 			if(data.status == 0){
 				let result = {
 					code : stockCode,
@@ -41,7 +42,8 @@ function saveStockData(stockCode,cb){
 						date : item[0],
 						max : item[6],
 						min : item[5],
-						close : item[2]
+						close : item[2],
+						start : item[1]
 					})
 				});
 				const stock = new StockModel(result);
@@ -49,17 +51,19 @@ function saveStockData(stockCode,cb){
 					if(err){
 						console.log(err);
 					}else{
-						console.log(`save stock data success, stock code is ${stockCode},${processCounter}/${dataLength}`);
+						console.log(`success,stockCode: ${stockCode},${processCounter}/${dataLength}`);
 					}
 				})
 			}else{
 				console.log(`${data.msg},${processCounter}/${dataLength}`);
 			}
 		}else{
-			console.log(`get data failed,${processCounter}/${dataLength}`);
+			console.log(`failed,stockCode: ${stockCode},${processCounter}/${dataLength}`);
 		}
 		if(processCounter == dataLength){
+			console.log('finished');
 			mongoose.connection.close();
+			process.exit(0);
 		}
 		cb();
 	});

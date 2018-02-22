@@ -401,7 +401,7 @@ muri@1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/muri/download/muri-1.3.0.tgz#aeccf3db64c56aa7c5b34e00f95b7878527a4721"
 
-nan@^2.5.0:
+nan@^2.5.0, nan@^2.7.0:
   version "2.7.0"
   resolved "http://registry.npm.taobao.org/nan/download/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
 
@@ -548,6 +548,12 @@ string_decoder@~1.0.0, string_decoder@~1.0.3:
 stringstream@~0.0.5:
   version "0.0.5"
   resolved "http://registry.npm.taobao.org/stringstream/download/stringstream-0.0.5.tgz#4e484cd4de5a0bbbee18e46307710a8a81621878"
+
+talib-binding@^0.3.2:
+  version "0.3.2"
+  resolved "http://registry.npm.taobao.org/talib-binding/download/talib-binding-0.3.2.tgz#9017323d85595e6fe59c23e8f38314790a949fd3"
+  dependencies:
+    nan "^2.7.0"
 
 talib@^1.0.3:
   version "1.0.3"
