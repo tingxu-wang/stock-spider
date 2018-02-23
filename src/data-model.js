@@ -5,6 +5,7 @@ mongoose.Promise = global.Promise;
 
 const StockModel = mongoose.model('Stock',{
 	code : String,
+	name : String,
 	data : Array
 });
 

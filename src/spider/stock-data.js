@@ -36,7 +36,10 @@ function writeDate() {
 	}
 }
 
-function saveStockData(stockCode,cb){
+function saveStockData(stockData,cb){
+	const stockCode = stockData.code,
+		stockName = stockData.name;
+
 	request.get(dataUrl.replace('${code}',stockCode).replace('${end}', moment().format('YYYYMMDD')),{timeout: timeout},function(err,res,body){
 		processCounter += 1;
 		if(err){
@@ -52,6 +55,7 @@ function saveStockData(stockCode,cb){
 			if(data.status == 0){
 				let result = {
 					code : stockCode,
+					name : stockName,
 					data : []
 				};
 				data = data.hq;
@@ -70,7 +74,10 @@ function saveStockData(stockCode,cb){
 						console.log(err);
 					}else{
 						console.log(`success,stockCode: ${stockCode},${processCounter}/${dataLength}`);
-						successCode.push(stockCode);
+						successCode.push({
+							code: stockCode,
+							name: stockName
+						});
 					}
 				})
 			}else{
@@ -93,8 +100,8 @@ fs.open(`${__dirname}/../data/get-date.json`, 'a', function(err ,data) {
 			return
 		}
 		StockModel.remove({}).then(()=>{
-			async.mapLimit(stockCodes, maxAsync, (stockCode,cb)=>{
-				saveStockData(stockCode,cb);
+			async.mapLimit(stockCodes, maxAsync, (stockData,cb)=>{
+				saveStockData(stockData,cb);
 			});
 		});
 	})

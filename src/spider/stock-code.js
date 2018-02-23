@@ -3,15 +3,18 @@
 * */
 
 const cheerio = require('cheerio'),
+	iconv = require('iconv-lite'),
 	request = require('request'),
 	fs = require('fs'),
 	stockListUrl = require('../config').stockListUrl;
 
-request.get(stockListUrl,function(err,res,body){
+request.get(stockListUrl,{encoding: null},function(err,res,bodyBuffer){
 	if(err){
 		console.log(err)
 		return;
 	}
+
+	const body = iconv.decode(bodyBuffer, 'GBK');
 
 	const $ = cheerio.load(body);
 	const $a = $('.quotebody #quotesearch li a[href]');
@@ -19,13 +22,21 @@ request.get(stockListUrl,function(err,res,body){
 		stockCodeList = [];
 
 	for(let i = 0;i < length;i++){
-		const href = $a[i].attribs.href;
-		const code = /\.com\/[a-z]+([\d]+).html/.exec(href)[1];
+		const data = $a[i].children[0].data;
+		const result = /([^\(]+)\((\d+)\)/.exec(data);
 
-		stockCodeList.push(code);
+		if(result){
+			const name = result[1],
+				code = result[2];
+
+			stockCodeList.push({
+				name,
+				code,
+			});
+		}
 	}
 
-	const writeStream = fs.createWriteStream('../data/stock-code.json');
+	const writeStream = fs.createWriteStream(`${__dirname}/../data/stock-code.json`);
 
 	writeStream.write(JSON.stringify(stockCodeList));
 	writeStream.end(()=>{

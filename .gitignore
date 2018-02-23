@@ -3,4 +3,5 @@ npm-debug.log
 .idea
 yarn.lock
 stock-code.json
+get-date.json
 db
