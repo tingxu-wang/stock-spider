@@ -29,10 +29,12 @@ request.get(stockListUrl,{encoding: null},function(err,res,bodyBuffer){
 			const name = result[1],
 				code = result[2];
 
-			stockCodeList.push({
-				name,
-				code,
-			});
+			if(/^600|601|002|300/.test(code)){ // 筛选个股
+				stockCodeList.push({
+					name,
+					code,
+				});
+			}
 		}
 	}
 

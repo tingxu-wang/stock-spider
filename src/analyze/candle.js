@@ -12,7 +12,7 @@ module.exports = function(stockData) {
 		name = stockData.name,
 		code = stockData.code;
 
-	const sliceLength = 10,
+	const sliceLength = 5,
 		recentData = data.slice(0, sliceLength);
 	const res = [];
 
@@ -22,11 +22,9 @@ module.exports = function(stockData) {
 		item.max = Number(item.max);
 		item.min = Number(item.min);
 
-		let prev;
+		let prev = recentData[index + 1];
 
-		if(index + 1 !== sliceLength){
-			prev = recentData[index + 1];
-
+		if(prev){
 			prev.start = Number(prev.start);
 			prev.close = Number(prev.close);
 			prev.max = Number(prev.max);
@@ -43,11 +41,10 @@ module.exports = function(stockData) {
 		 *
 		 * 开盘价和收盘价间隔在0.1以内
 		 * */
-		if(Math.abs(item.start - item.close) <= 0.05){
+		if(Math.abs(item.start - item.close) <= 0.01){
 			resObj.type.push('十字星');
 
 			if(
-				Math.abs(item.start - item.close) < 0.05 &&
 				Math.abs(item.start - item.max) > 0.1 &&
 				Math.abs(item.close - item.min) <= 0.04
 			){
@@ -56,31 +53,33 @@ module.exports = function(stockData) {
 		}
 
 		/*
-		 * 阳包阴
-		 *
-		 * */
-		if(
-			prev &&
-			(item.start < item.close) &&
-			(prev.close < prev.start) &&
-			(item.close >= prev.start) &&
-			(item.start <= prev.close)
-		){
-			resObj.type.push('阳包阴');
-		}
-
-		/*
 		 * 阴包阳
 		 *
 		 * */
 		if(
 			prev &&
-			(item.close < item.start) &&
-			(prev.start < prev.close) &&
-			(item.start >= prev.close) &&
-			(item.close <= prev.start)
+			Math.abs(prev.start - prev.close) > 0.2 &&
+			(item.start < item.close) &&
+			(prev.close < prev.start) &&
+			(item.close <= prev.start) &&
+			(item.start >= prev.close)
 		){
 			resObj.type.push('阴包阳');
+		}
+
+		/*
+		 * 阳包阴
+		 *
+		 * */
+		if(
+			prev &&
+			Math.abs(prev.start - prev.close) > 0.2 &&
+			(item.start > item.close) &&
+			(prev.close > prev.start) &&
+			(item.close >= prev.start) &&
+			(item.start <= prev.close)
+		){
+			resObj.type.push('阳包阴');
 		}
 
 		// 添加结果
@@ -90,5 +89,9 @@ module.exports = function(stockData) {
 		}
 	});
 
-	console.log(res);
+	return {
+		code,
+		name,
+		data: res
+	};
 };
